@@ -25,7 +25,7 @@ terms.each do |term|
   puts "Fetching #{term} Assembly"
   json = json_from(url).first
   next if json[:TotalRows].to_i.zero?
-  json[:Rows].sort_by { |r| r[:ID_Depute] }.each do |row|
+  json[:Rows].sort_by { |r| r[:ID_Depute].to_i }.each do |row|
     data = { 
       id: row[:ID_Depute],
       name: row[:nomPrenom],
