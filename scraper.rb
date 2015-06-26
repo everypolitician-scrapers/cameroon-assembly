@@ -14,16 +14,18 @@ def json_from(url)
   JSON.parse(open(url).read, symbolize_names: true) 
 end
 
-PAGE = 'http://www.assnat.cm/gestionLoisLegislatures/sujetsForum.php?filterscount=0&groupscount=0&pagenum=0&pagesize=200&recordstartindex=0&recordendindex=0&affichageDeputes=true&legislature=%s+Legislative'
+
+PAGE_EN = 'http://www.assnat.cm/gestionLoisLegislatures/gestionDeputesEN.php?filterscount=0&groupscount=0&pagenum=0&pagesize=200&recordstartindex=0&recordendindex=0&affichageDeputes=true&legislature=%s+Legislative'
+PAGE_FR = 'http://www.assnat.cm/gestionLoisLegislatures/sujetsForum.php?filterscount=0&groupscount=0&pagenum=0&pagesize=200&recordstartindex=0&recordendindex=0&affichageDeputes=true&legislature=%s+Legislative'
 
 terms = %w(1st 2nd 3rd 4th 5th 6th 7th 8th 9th)
 
 terms.each do |term|
-  url = PAGE % term
-  puts "Fetching #{url}"
+  url = PAGE_EN % term
+  puts "Fetching #{term} Assembly"
   json = json_from(url).first
   next if json[:TotalRows].to_i.zero?
-  json[:Rows].each do |row|
+  json[:Rows].sort_by { |r| r[:ID_Depute] }.each do |row|
     data = { 
       id: row[:ID_Depute],
       name: row[:nomPrenom],
